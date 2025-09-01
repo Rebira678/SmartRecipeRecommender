@@ -34,7 +34,7 @@ This project allows users to generate **personalized recipes** based on the ingr
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/smart-recipe.git
+   git clone https://github.com/Rebira678/SmartRecipeRecommender
    cd smart-recipe
    ```
 ````
@@ -75,16 +75,22 @@ This project allows users to generate **personalized recipes** based on the ingr
 
 ## **Screenshots**
 
-![Dashboard](static/images/dashboard.jpg)
-![Pantry](static/images/pantry.jpg)
+![ScreenshotOfWindow](static/images/ScreenshotOfWindow.png)
+![ScreenshotOfPhone](static/images/ScreenshotOfPhone.jpg)
 
 ---
 
 ## **Live Demo**
 
-\[Insert your live project link here]
+(https://smartreciperecommender-c8i8.onrender.com/)
 
 ---
+
+## **Live Demo Video**
+
+[![Watch the demo](https://img.youtube.com/vi/5-SyrZRUotU/maxresdefault.jpg)](https://youtu.be/5-SyrZRUotU)
+
+Click the thumbnail above to watch the demo on YouTube.
 
 ## **Author**
 
