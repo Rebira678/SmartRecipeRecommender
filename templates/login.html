@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login • Smart Recipe</title>
+
+  <!-- main site stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    .bg-image {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -4;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      opacity: 0;
+      transition: opacity 900ms ease;
+      filter: saturate(.95) contrast(.92) brightness(.78);
+    }
+    .bg-image.visible { opacity: 1; }
+
+    .bg-overlay{
+      position: fixed; inset:0; z-index:-3;
+      background: linear-gradient(180deg, rgba(6,10,12,0.55), rgba(6,10,12,0.72));
+      pointer-events: none;
+    }
+
+    .auth-wrap { max-width:520px; margin:80px auto; padding:0 18px; }
+    .auth .panel { padding:28px; border-radius:14px; }
+    .auth input{ width:100%; padding:12px; margin:8px 0; border-radius:10px }
+    .auth button{ width:100%; padding:12px; margin-top:8px; border-radius:10px }
+
+    /* error message styling */
+    .error-msg {
+      color: #ff4d4f;
+      background: rgba(255, 77, 79, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="bgImage" class="bg-image" aria-hidden="true"></div>
+  <div class="bg-overlay"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo">🍽</div>
+        <h1>Smart Recipe</h1>
+      </div>
+      <div><a href="{{ url_for('register') }}">Create account</a></div>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <div class="auth-wrap">
+      <div class="panel auth">
+        <h2>Welcome back</h2>
+        <p class="small">Sign in to generate personalized recipes and save favorites.</p>
+
+        <form method="POST" action="{{ url_for('login') }}">
+          <input name="username" placeholder="Username" required autocomplete="username" />
+          <input name="password" type="password" placeholder="Password" required autocomplete="current-password" />
+          <button type="submit">Login</button>
+
+          <!-- Display error if exists -->
+          {% if error %}
+            <p class="error-msg">{{ error }}</p>
+          {% endif %}
+        </form>
+
+        <div class="links">
+          <a class="link" href="{{ url_for('register') }}">Need an account? Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load the local kitchen image
+    (function setLoginBackground() {
+      const target = document.getElementById('bgImage');
+      const url = "{{ url_for('static', filename='images/login.jpg') }}"; 
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        target.style.backgroundImage = `url('${url}')`;
+        target.classList.add('visible');
+      };
+      img.onerror = () => {
+        target.style.background = 'linear-gradient(180deg,#071018,#0b1014)';
+        target.classList.add('visible');
+      };
+    })();
+  </script>
+</body>
+</html>

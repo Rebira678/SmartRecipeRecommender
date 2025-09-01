@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pantry • Smart Recipe</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    /* Inline: ensure delete button is small and doesn't take a large area */
+    .pantry-list { display:flex; flex-direction:column; gap:8px; padding:0; margin:12px 0; list-style:none; }
+    .pantry-item { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border:1px solid var(--border, #e0e0e0); border-radius:8px; background:var(--panel-bg,#fff); }
+    .pantry-name { flex:1; margin-right:8px; font-size:0.95rem; color:var(--text,#222);color: #333 !important; }
+    .delete-btn { border:0; background:transparent; cursor:pointer; padding:6px; border-radius:6px; font-size:0.95rem; line-height:1; color:#c0392b; }
+    .delete-btn:hover { background: rgba(192,57,43,0.08); }
+    .small-form { display:flex; gap:8px; align-items:center; margin-top:12px; }
+    .small-input { flex:1; padding:8px 10px; border-radius:8px; border:1px solid var(--border,#ddd); }
+    .small-submit { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; background:linear-gradient(135deg,#ff7a3d,#40c057); color:#fff; }
+  
+
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo">🍜</div>
+        <h1>Smart Recipe Recommender</h1>
+      </div>
+      <div class="links">
+        <a class="link" href="{{ url_for('index') }}">Home</a>
+        <a class="link" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <div class="panel">
+      <h2>My Pantry</h2>
+
+      <!-- Add new ingredient -->
+      <form method="POST" class="small-form" id="addPantryForm">
+        <input name="ingredient" id="ingredientInput" class="small-input" placeholder="e.g., garlic, tomato, rice" required>
+        <button type="submit" class="small-submit">Add</button>
+      </form>
+
+      <!-- Pantry list -->
+      <ul id="pantryList" class="pantry-list" aria-live="polite">
+        {% if pantry and pantry|length > 0 %}
+          {% for item in pantry %}
+            <li class="pantry-item" data-id="{{ item.id }}">
+              <div class="pantry-name">{{ item.ingredient }}</div>
+              <button class="delete-btn" title="Delete item" aria-label="Delete {{ item.ingredient }}">✖</button>
+            </li>
+          {% endfor %}
+        {% else %}
+          <div class="small" style="color:var(--muted)">Your pantry is empty. Add ingredients to generate recipes.</div>
+        {% endif %}
+      </ul>
+
+    </div>
+  </div>
+
+  <script>
+    // handle delete clicks (delegation)
+    document.addEventListener('click', async (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('delete-btn')) {
+        const li = e.target.closest('.pantry-item');
+        if (!li) return;
+        const id = li.getAttribute('data-id');
+        if (!id) return;
+        // optimistic UI: disable button
+        e.target.disabled = true;
+        e.target.textContent = '...';
+        try {
+          const resp = await fetch(`/pantry/delete/${id}`, { method: 'POST', credentials: 'same-origin' });
+          if (resp.ok) {
+            // remove from DOM
+            li.remove();
+            // If list becomes empty, show placeholder text
+            const list = document.getElementById('pantryList');
+            if (!list.querySelector('.pantry-item')) {
+              list.innerHTML = '<div class="small" style="color:var(--muted)">Your pantry is empty. Add ingredients to generate recipes.</div>';
+            }
+          } else {
+            const j = await resp.json().catch(()=>({}));
+            alert('Delete failed: ' + (j.error || resp.statusText || 'Unknown'));
+            e.target.disabled = false;
+            e.target.textContent = '✖';
+          }
+        } catch (err) {
+          console.error('Delete error', err);
+          alert('Network error while deleting');
+          e.target.disabled = false;
+          e.target.textContent = '✖';
+        }
+      }
+    });
+
+    // optional: submit add form via standard POST to keep server-side logic (does redirect)
+    const addForm = document.getElementById('addPantryForm');
+    if (addForm) {
+      addForm.addEventListener('submit', (ev) => {
+        // allow normal POST so server adds item and redirects - keeps things simple
+        // If you prefer AJAX add, replace with fetch POST to /pantry then update UI without reload.
+      });
+    }
+  </script>
+</body>
+</html>

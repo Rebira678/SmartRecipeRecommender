@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pantry • Smart Recipe</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+  <style>
+    /* HD background image with cinematic overlay */
+    .bg-image {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      opacity: 0;
+      transform: scale(1.05);
+      transition: opacity 900ms ease, transform 2s ease;
+      filter: saturate(1.1) contrast(1.05) brightness(0.7) blur(0.5px);
+    }
+    .bg-image.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75));
+    }
+
+    .panel {
+      background: rgba(0,0,0,0.65);
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      max-width: 600px;
+      margin: 40px auto;
+      color: #fff;
+    }
+
+    .panel h2 { margin-bottom: 16px; color: #fff; }
+
+    form input {
+      width: calc(100% - 100px);
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-right: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    form input::placeholder { color: #ddd; }
+
+    form button {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg,#ff7a3d,#40c057);
+      color: white;
+      cursor: pointer;
+    }
+
+    form button:hover { opacity: 0.9; }
+
+    .pantry-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pantry-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .pantry-item span { color: #fff; }
+
+    .pantry-item button {
+      background: crimson;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .pantry-item button:hover { background: darkred; }
+
+    #clearAllBtn {
+      margin-top: 12px;
+      background: #ff4d4d;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #clearAllBtn:hover { background: #cc0000; }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div id="bgImage" class="bg-image"></div>
+  <div class="bg-overlay"></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo">🧂</div>
+        <h1>My Pantry</h1>
+      </div>
+      <div class="links">
+        <a class="link" href="{{ url_for('index') }}">Dashboard</a>
+        <a class="link" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <div class="panel">
+      <h2>Your Pantry</h2>
+      <form id="addForm" method="POST">
+        <input name="ingredient" placeholder="e.g., parsley" required>
+        <button type="submit">Add</button>
+      </form>
+
+      <div class="pantry-list" id="pantryList">
+        {% for item in pantry %}
+          <div class="pantry-item">
+            <span>{{ item }}</span>
+            <button class="deleteBtn">Delete</button>
+          </div>
+        {% endfor %}
+      </div>
+      <button id="clearAllBtn">Clear All</button>
+    </div>
+  </div>
+
+  <script>
+    // Load HD kitchen/food image from Unsplash
+    (function setBackground() {
+      const target = document.getElementById('bgImage');
+      const queries = [
+        "modern kitchen interior",
+        "luxury kitchen",
+        "professional kitchen",
+        "cozy kitchen interior",
+        "chef kitchen",
+        "gourmet kitchen",
+        "rustic kitchen",
+        "food background",
+        "cooking ingredients"
+      ];
+      const q = queries[Math.floor(Math.random() * queries.length)];
+      const url = `https://source.unsplash.com/2560x1440/?${encodeURIComponent(q)}`;
+
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        target.style.backgroundImage = `url('${url}')`;
+        target.classList.add('visible');
+      };
+      img.onerror = () => {
+        const fallbackUrl = "{{ url_for('static', filename='images/fallback-kitchen.jpg') }}";
+        target.style.backgroundImage = `url('${fallbackUrl}')`;
+        target.classList.add('visible');
+      };
+    })();
+
+    // Delete individual pantry item
+    document.querySelectorAll('.deleteBtn').forEach(btn => {
+      btn.onclick = (e) => {
+        const itemDiv = e.target.parentElement;
+        itemDiv.remove();
+      };
+    });
+
+    // Clear all pantry items
+    document.getElementById('clearAllBtn').onclick = () => {
+      document.getElementById('pantryList').innerHTML = '';
+    };
+  </script>
+</body>
+</html>

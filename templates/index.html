@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard • Smart Recipe</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo">🍜</div>
+        <h1>Smart Recipe Recommender</h1>
+      </div>
+      <div class="links">
+        <a class="link" href="{{ url_for('pantry') }}">Pantry</a>
+        <a class="link" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <div class="hero panel">
+      <div>
+        <h2>Hi, {{ username }} 👋</h2>
+        <p>Tell me what you have — I’ll craft recipes with images and read them aloud.</p>
+
+        <div class="controls">
+          <input id="ingredients" class="input" placeholder="e.g., chicken, garlic, lemon">
+          <select id="diet" class="select">
+            <option value="">Any diet</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="keto">Keto</option>
+            <option value="gluten free">Gluten Free</option>
+          </select>
+          <button id="generateBtn" class="btn">Generate</button>
+        </div>
+
+        <div class="news" style="margin-top:14px">
+          <div class="ticker panel small">Latest food news:</div>
+          <div class="ticker" style="flex:1"><div class="small" id="newsText"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="loader" style="display:none" class="loader"></div>
+
+    <!-- Results + History area -->
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:16px; margin-top:18px">
+      <div>
+        <div id="results" class="grid"></div>
+      </div>
+
+      <!-- RIGHT COLUMN: History -->
+      <aside class="panel" style="height: fit-content;">
+        <h3 style="margin:0 0 8px 0">Search History</h3>
+        <p class="small" style="margin:0 0 12px 0">Click a history item to view or re-run.</p>
+        <div id="historyList" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <button id="clearHistory" class="btn" style="margin-top:12px; background:linear-gradient(135deg,#ff7a3d,#40c057)">Clear History</button>
+      </aside>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+    // small bootstrap: update news text
+    async function start(){
+      try{
+        const r = await fetch('/news');
+        const j = await r.json();
+        document.getElementById('newsText').textContent = j.headlines.join('  •  ');
+      }catch(e){ console.error(e) }
+    }
+    start();
+  </script>
+</body>
+</html>                 

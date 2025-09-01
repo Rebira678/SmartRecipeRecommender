@@ -1,0 +1,138 @@
+/* clean modern dark food theme */
+:root{
+  --bg:#0b0f12;
+  --panel: rgba(255,255,255,0.03);
+  --card: rgba(255,255,255,0.04);
+  --muted:#9fb0c3;
+  --accent:#40c057;   /* fresh green accent */
+  --accent-2:#ff7a3d; /* warm orange */
+  --text:#ecf0f3;
+  --glass: rgba(12,16,20,0.6);
+  --border: rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box}
+html,body{height:100%; margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text); background:var(--bg);}
+a{color:var(--accent); text-decoration:none}
+
+/* background image overlay */
+.bg-image{
+  position:fixed; inset:0; z-index:-2; background-size:cover; background-position:center; filter: saturate(.9) contrast(.9);
+}
+.bg-overlay{
+  position:fixed; inset:0; background: linear-gradient(180deg, rgba(6,10,12,0.45), rgba(6,10,12,0.65)); z-index:-1;
+}
+
+/* nav */
+.nav{ width:100%; position:sticky; top:0; z-index:30; padding:14px 20px; display:flex; justify-content:center; }
+.nav-inner{ max-width:1100px; width:100%; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.brand{ display:flex; gap:12px; align-items:center }
+.brand .logo{ width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:grid; place-items:center; font-size:20px; box-shadow:0 8px 24px rgba(0,0,0,0.5); }
+.brand h1{ margin:0; font-size:18px; }
+
+/* shell */
+.shell{ max-width:1100px; margin:36px auto; padding:16px; }
+
+/* hero / controls */
+.hero{ display:grid; grid-template-columns:1.2fr .7fr; gap:18px; align-items:start; }
+@media(max-width:920px){ .hero{ grid-template-columns:1fr } }
+
+.panel{ background:var(--glass); border-radius:14px; padding:18px; border:1px solid var(--border); box-shadow: 0 10px 30px rgba(2,6,8,0.6); }
+
+.hero h2{ margin:0 0 6px; font-size:26px; }
+.hero p{ margin:0; color:var(--muted) }
+
+/* controls row */
+.controls{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center }
+.input, .select{ flex:1 1 220px; padding:12px 14px; border-radius:10px; background:var(--card); border:1px solid var(--border); color:var(--text); outline:none }
+.btn{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#081018; padding:12px 16px; border-radius:10px; border:none; font-weight:700; cursor:pointer; box-shadow:0 8px 30px rgba(64,192,87,0.12) }
+
+/* results grid */
+.grid{ margin-top:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px }
+@media(max-width:1100px){ .grid{ grid-template-columns:repeat(2,1fr) } }
+@media(max-width:700px){ .grid{ grid-template-columns:1fr } }
+
+.card{ background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border-radius:12px; overflow:hidden; border:1px solid var(--border); display:flex; flex-direction:column; }
+.card img{ width:100%; height:180px; object-fit:cover; display:block; }
+.card .body{ padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:8px; }
+.card h3{ margin:0; font-size:16px }
+.card p{ margin:0; color:var(--muted); font-size:13px; line-height:1.35; }
+.card .actions{ display:flex; gap:8px; margin-top:auto; align-items:center }
+.action-btn{ padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; }
+
+/* news */
+.news{ margin-top:18px; display:flex; gap:12px; align-items:center }
+.news .ticker{ flex:1; padding:10px 12px; border-radius:10px; background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--border); color:var(--muted) }
+
+/* small loader */
+.loader{ width:24px;height:24px;border-radius:50%; border:3px solid rgba(255,255,255,0.08); border-top-color:var(--accent-2); animation:spin 1s linear infinite; margin:8px auto }
+@keyframes spin{ to{ transform:rotate(360deg) } }
+
+/* auth pages */
+.auth-wrap{ max-width:420px; margin:80px auto; }
+.auth .panel{ padding:22px; text-align:center }
+.auth input{ width:100%; padding:12px; margin:8px 0; border-radius:10px; background:var(--card); border:1px solid var(--border); color:var(--text) }
+.auth button{ width:100%; padding:12px; margin-top:8px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#081018; border:none; cursor:pointer; font-weight:700 }
+
+/* utility */
+.links{ display:flex; gap:12px; margin-top:12px; justify-content:center }
+.small{ font-size:13px; color:var(--muted) }
+
+
+
+
+
+
+
+
+/* ===== Fixed, reliable background layering ===== */
+body { background: none !important; background-color: transparent !important; }
+
+/* background image (full-bleed, fixed) */
+.bg-image {
+  position: fixed;
+  inset: 0;
+  z-index: 0;               /* base layer */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: 0;
+  transition: opacity 900ms ease;
+  filter: saturate(.98) contrast(.95) brightness(.80);
+}
+
+/* dark overlay sits above background image */
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(6,10,12,0.5), rgba(6,10,12,0.65));
+  pointer-events: none;
+}
+
+/* UI sits above overlay */
+.nav, .shell, .panel, .auth-wrap { position: relative; z-index: 2; }
+
+/* make bg visible when class added */
+.bg-image.visible { opacity: 1 !important; }
+
+
+
+
+
+/* Style for select dropdowns */
+.select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f5f5f5; /* light gray background like pantry */
+    color: #333;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.select:focus {
+    border-color: #40c057; /* green focus like your buttons */
+    box-shadow: 0 0 0 2px rgba(64, 192, 87, 0.2);
+}
